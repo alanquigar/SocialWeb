@@ -14,6 +14,7 @@ const persons = [
     {
         name:"Damian",
         lastname: "Venegas",
+        phone: "614-524-8562",
         age: 19,
         city: "Chihuahua",
         id: "2"
@@ -32,7 +33,7 @@ const typeDefs = gql`
     type Person {
         name: String!
         lastname: String!
-        phone: String
+        phone: String!
         age: Int!
         city: String!
         id: ID!
@@ -48,7 +49,7 @@ const typeDefs = gql`
         addPerson(
             name: String!
             lastname: String!
-            phone: String
+            phone: String!
             age: Int!
             city: String!
         ): Person
@@ -66,6 +67,9 @@ const resolvers = {
     },
     Mutation:{
         addPerson: (root,args) => {
+            if(persons.find(p => p.phone == args.phone)){
+                throw new Error('Este numero ya tiene una cuenta asociada')
+            }
             const person = {...args,id:uuid()}
             persons.push(person)
             return person
