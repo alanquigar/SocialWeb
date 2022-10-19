@@ -1,24 +1,28 @@
 
 import {ApolloServer,gql} from 'apollo-server'
+import {v1 as uuid} from 'uuid'
 
 const persons = [
     {
         name:"Alan",
+        lastname: "Quinones",
         phone: "656-572-3869",
-        street: "Babicora",
+        age: 21,
         city: "Juarez",
         id: "1"
     },
     {
         name:"Damian",
-        street: "Yepomera",
+        lastname: "Venegas",
+        age: 19,
         city: "Chihuahua",
         id: "2"
     },
     {
         name:"Felix",
+        lastname: "Franco",
         phone: "656-124-5252",
-        street: "Roma",
+        age: 23,
         city: "Juarez",
         id: "3"
     }
@@ -27,8 +31,9 @@ const persons = [
 const typeDefs = gql`
     type Person {
         name: String!
+        lastname: String!
         phone: String
-        street: String!
+        age: Int!
         city: String!
         id: ID!
     }
@@ -37,6 +42,16 @@ const typeDefs = gql`
         personCount: Int!
         allPersons: [Person]!
         findPerson(name: String!): Person
+    }
+
+    type Mutation {
+        addPerson(
+            name: String!
+            lastname: String!
+            phone: String
+            age: Int!
+            city: String!
+        ): Person
     }
 `
 
@@ -48,8 +63,16 @@ const resolvers = {
             const {name} = args
             return persons.find(person => person.name == name)
         }
+    },
+    Mutation:{
+        addPerson: (root,args) => {
+            const person = {...args,id:uuid()}
+            persons.push(person)
+            return person
+        }
     }
 }
+
 
 const server = new ApolloServer({
     typeDefs,resolvers
@@ -57,4 +80,5 @@ const server = new ApolloServer({
 
 server.listen().then(({url}) => {
     console.log(`Server ready at ${url}`)
+
 })
