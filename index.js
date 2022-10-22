@@ -1,36 +1,8 @@
 
 import {ApolloServer,gql} from 'apollo-server'
 import {v1 as uuid} from 'uuid'
+import axios from 'axios'
 
-const persons = [
-    {
-        name:"Alan",
-        lastname: "Quinones",
-        phone: "656-572-3869",
-        age: 21,
-        genero: "Masculino",
-        city: "Juarez",
-        id: "1"
-    },
-    {
-        name:"Damian",
-        lastname: "Venegas",
-        phone: "614-524-8562",
-        age: 19,
-        genero: "Masculino",
-        city: "Chihuahua",
-        id: "2"
-    },
-    {
-        name:"Felix",
-        lastname: "Franco",
-        phone: "656-124-5252",
-        age: 23,
-        genero: "Masculino",
-        city: "Juarez",
-        id: "3"
-    }
-]
 
 const typeDefs = gql`
     enum Genero {
@@ -80,9 +52,16 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        personCount: () => persons.length,
-        allPersons: () => persons,
-        findPerson: (root, args) => {
+        personCount:async () => 
+        {
+            persons.length
+        },
+        allPersons: async (root, args) => {
+            const {data: persons} = await axios.get('http://localhost:3000/persons')
+            persons
+        },
+        findPerson: async (root, args) => {
+            const {data: persons} = await axios.get('http://localhost:3000/persons')
             const {name} = args
             return persons.find(person => person.name == name)
         }
