@@ -54,11 +54,12 @@ const resolvers = {
     Query: {
         personCount:async () => 
         {
-            persons.length
+            const {data: persons} = await axios.get('http://localhost:3000/persons')
+            return persons.length
         },
         allPersons: async (root, args) => {
             const {data: persons} = await axios.get('http://localhost:3000/persons')
-            persons
+            return persons
         },
         findPerson: async (root, args) => {
             const {data: persons} = await axios.get('http://localhost:3000/persons')
